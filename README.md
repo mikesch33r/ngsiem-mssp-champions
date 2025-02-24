@@ -1,1 +1,3 @@
 # ngsiem-mssp-champions
+
+The NG-SIEM MSSP Champions program is intended to assist Service Providers as they onboard and deliver CrowdStrike NG-SIEM. This wiki repository contains some technical content as part of the workshop.
