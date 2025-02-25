@@ -1,0 +1,24 @@
+## This is YAML, so structure and indentation is important.
+## Lines can be uncommented by removing the #. You should not need to change the number of spaces after that.
+
+## Edit lines 17, 23, and 24
+
+sources:
+ macos_logs:
+   type: unifiedlog
+   format: json
+   include:
+     - process: sudo
+     - process: logind
+     - process: securityd
+   transforms:
+     - type: static_fields
+       fields:
+          falcon.admin: <yournamehere>
+   sink: macos-ngsiem
+
+sinks:
+  macos-ngsiem:
+    type: hec
+    token: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+    url: https://ABCDEFGHIJKLMNOPQRSTUVWXYZ.ingest.us-1.crowdstrike.com
