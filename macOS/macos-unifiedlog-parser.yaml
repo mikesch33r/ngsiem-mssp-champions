@@ -1,0 +1,32 @@
+name: macos-unifiedlog
+fieldsToBeRemovedBeforeParsing: []
+testCases:
+- event:
+    rawString: '{"traceID":1931734572728324,"eventMessage":"johndoe : 1 incorrect
+      password attempt ; TTY=ttys004 ; PWD=\/Users\/johndoe\/code ; USER=root ; COMMAND=list","eventType":"logEvent","source":null,"formatString":"%8s
+      : %s","activityIdentifier":0,"subsystem":"","category":"","threadID":3065437,"senderImageUUID":"755DD390-04E4-3D20-8304-00EC1F75437D","backtrace":{"frames":[{"imageOffset":264796,"imageUUID":"755DD390-04E4-3D20-8304-00EC1F75437D"}]},"bootUUID":"1EB6660D-AF01-4009-83C5-E27F3D67A3A2","processImagePath":"\/usr\/bin\/sudo","timestamp":"2023-04-25
+      13:21:46.663732+0200","senderImagePath":"\/usr\/bin\/sudo","machTimestamp":29395007725510,"messageType":"Default","processImageUUID":"755DD390-04E4-3D20-8304-00EC1F75437D","processID":81423,"senderProgramCounter":264796,"parentActivityIdentifier":0,"timezoneName":""}'
+$schema: https://schemas.humio.com/parser/v0.3.0
+script: |-
+  // ************ STANDARD TAGS ************
+  | Parser.version := "2.0.0"
+  | Vendor := "apple"
+  | event.module := "unifiedlog"
+  | ecs.version := "8.8.0"
+  | Cps.version := "1.0.0"
+  | event.kind := "event"
+  | event.category[0] := "process"
+  | event.type[0] := "info"
+
+  | parseJson(prefix="Vendor.", excludeEmpty="true", handleNull="discard")
+  | parseTimestamp("yyyy-MM-dd HH:mm:ss.nZ",field="Vendor.timestamp",timezone="UTC")
+  | kvParse(field=Vendor.eventMessage, as="Vendor.eventMessage")
+tagFields:
+- Cps.version
+- Vendor
+- ecs.version
+- event.dataset
+- event.kind
+- event.module
+- event.outcome
+- observer.type
