@@ -1,7 +1,6 @@
 # NG-SIEM MSSP Champions Workshop Tools
 <br/>
-
-## The NG-SIEM MSSP Champions program is intended to assist Service Providers as they onboard and deliver CrowdStrike NG-SIEM. This wiki repository contains some technical content as part of the workshop.
+### The NG-SIEM MSSP Champions program is intended to assist Service Providers as they onboard and deliver CrowdStrike NG-SIEM. This wiki repository contains some technical content as part of the workshop.
 <br/>
 
 If you are using a Mac and would like to set up NG-SIEM ingest of the MacOS unified log:
