@@ -7,11 +7,11 @@ If you are using a Mac and would like to set up NG-SIEM ingest of the MacOS unif
 | MacOS  |  |
 | ------------- | ------------- |
 | [Mac Config](https://github.com/mikesch33r/ngsiem-mssp-champions/blob/main/macOS/macos-unifiedlog-config.yaml)  | The local logscale collector configuration file, pre-formatted for you  |
-| [Mac Parser](https://github.com/mikesch33r/ngsiem-mssp-champions/blob/main/macOS/macos-unifiedlog-parser.yaml)  | The parser that the HEC connector will use to parse the unified logs  |
+| [Mac Parser](https://github.com/mikesch33r/ngsiem-mssp-champions/blob/main/macOS/macos-unifiedlog-parser.yaml)  | The appropriate parser that the HEC connector will use to parse the unified logs  |
 <br/>
 
 If you are using a Windows host and would like to set up NG-SIEM ingest of the Windows event log:
 | Windows  |  |
 | ------------- | ------------- |
 | Windows Config  | The local logscale collector configuration file, pre-formatted for you  |
-| Windows Parser  | The parser that the HEC connector will use to parse the event logs  |
+| Windows Parser  | The appropriate parser that the HEC connector will use to parse the event logs  |
