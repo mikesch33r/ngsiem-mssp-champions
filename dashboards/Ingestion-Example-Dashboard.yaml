@@ -1,0 +1,138 @@
+name: '- NKO - Data ingestion '
+updateFrequency: never
+timeSelector: {}
+sharedTimeInterval:
+  enabled: false
+  isLive: false
+  start: 1d
+widgets:
+  b50ff74a-731f-4d3b-a29e-9bd30dc8b6bf:
+    x: 6
+    y: 4
+    height: 4
+    queryString: |
+      | #repo != base_sensor #repo !=falcon_for_it #repo !=detections #repo !=fusion #repo !=xdr_eventsrepo #repo !=xdr_indicatorsrepo #repo !=sensor_backup #repo !=xdr_eventsarchive
+      //| #repo = base_sensor OR #repo =falcon_for_it OR #repo =detections OR #repo =fusion OR #repo =xdr_eventsrepo OR #repo =xdr_indicatorsrepo OR #repo =sensor_backup OR #repo =xdr_eventsarchive
+      | eventSize()
+      | unit:convert(_eventSize, to="G")
+      //| sum("_eventSize")
+      | timeChart(#repo)
+    end: now
+    start: 1d
+    width: 6
+    options:
+      connect-points: false
+      imputation: none
+    visualization: time-chart
+    title: Events ingestion per 3rd party Repo
+    isLive: false
+    type: query
+  f2a10ad5-fe94-4a33-a5ed-1b00c2abfb6a:
+    x: 0
+    y: 4
+    height: 4
+    queryString: |
+      //| #repo != base_sensor #repo !=falcon_for_it #repo !=detections #repo !=fusion #repo !=xdr_eventsrepo #repo !=xdr_indicatorsrepo #repo !=sensor_backup #repo !=xdr_eventsarchive
+      | #repo = base_sensor OR #repo =falcon_for_it OR #repo =detections OR #repo =fusion OR #repo =xdr_eventsrepo OR #repo =xdr_indicatorsrepo OR #repo =sensor_backup OR #repo =xdr_eventsarchive
+      | eventSize()
+      | unit:convert(_eventSize, to="G")
+      //| sum("_eventSize")
+      | timeChart(#repo)
+    end: now
+    start: 1d
+    width: 6
+    options:
+      connect-points: false
+      imputation: none
+    visualization: time-chart
+    title: Events Ingested per Crowdstrike repo
+    isLive: false
+    type: query
+  a7a1d8ef-c0f4-4425-95b7-32e4b0b8872c:
+    x: 0
+    y: 0
+    height: 4
+    queryString: |
+      //| #repo != base_sensor #repo !=falcon_for_it #repo !=detections #repo !=fusion #repo !=xdr_eventsrepo #repo !=xdr_indicatorsrepo #repo !=sensor_backup #repo !=xdr_eventsarchive
+      | #repo = base_sensor OR #repo =falcon_for_it OR #repo =detections OR #repo =fusion OR #repo =xdr_eventsrepo OR #repo =xdr_indicatorsrepo OR #repo =sensor_backup OR #repo =xdr_eventsarchive
+      | eventSize()
+      | unit:convert(_eventSize, to="G")
+      | sum("_eventSize")
+    end: now
+    start: 1d
+    width: 6
+    options:
+      range-max: 5
+      suffix: GB/day
+      thresholdConfig:
+        palette: Blue monochrome
+        reversePalette: false
+        thresholds: []
+    visualization: gauge
+    title: Crowdstrike Data Storage
+    isLive: false
+    type: query
+  287d6d34-c2a1-4bd5-89c4-0fa834ac6218:
+    x: 0
+    y: 8
+    height: 4
+    queryString: |-
+      |select([#repo,@timestamp,@ingesttimestamp])
+      |ingest_lag := (@ingesttimestamp-@timestamp)/1000
+      |groupBy([#repo], function=[
+      avg(ingest_lag, as="avg_ingest_lag_seconds"),
+      selectLast(@timestamp)
+      ])
+      | minutes_since_last_event := (now() - @timestamp)
+      |ingest_lag_min := avg_ingest_lag_seconds/60
+      |format(format="%.2f", field=[ingest_lag_min], as=ingest_lag_minutes)
+      |ingest_lag_hour := avg_ingest_lag_seconds/3600
+      |format(format="%.2f", field=[ingest_lag_hour], as=ingest_lag_hours)
+      |formatDuration(minutes_since_last_event, precision=2, as=time_since_last_event)
+      |table([#repo,ingest_lag_minutes,time_since_last_event])
+      |sort(ingest_lag_minutes)
+    end: now
+    start: 1d
+    width: 6
+    options:
+      cell-overflow: wrap-text
+      configured-columns:
+        ingest_lag_minutes:
+          color:
+            palette: Green red diverging
+            reversePalette: false
+            thresholds:
+            - value: 50
+            - value: 100
+          data-type: number
+      row-numbers-enabled: false
+    visualization: table-view
+    title: Ingestion Lag
+    isLive: false
+    type: query
+  31328779-d357-4601-9b7e-b4711a9c770b:
+    x: 6
+    y: 0
+    height: 4
+    queryString: |
+      //| #repo != base_sensor #repo !=falcon_for_it #repo !=detections #repo !=fusion #repo !=xdr_eventsrepo #repo !=xdr_indicatorsrepo #repo !=sensor_backup #repo !=xdr_eventsarchive
+      | #repo != base_sensor OR #repo !=falcon_for_it OR #repo !=detections OR #repo !=fusion OR #repo !=xdr_eventsrepo OR #repo !=xdr_indicatorsrepo OR #repo !=sensor_backup OR #repo !=xdr_eventsarchive
+      | eventSize()
+      | unit:convert(_eventSize, to="G")
+      | sum("_eventSize")
+    end: now
+    start: 1d
+    width: 6
+    options:
+      range-max: 50
+      suffix: GB/day
+      thresholdConfig:
+        palette: Green red diverging
+        reversePalette: false
+        thresholds:
+        - value: 10
+    visualization: gauge
+    title: 3rd Party Data storage
+    isLive: false
+    type: query
+$schema: https://schemas.humio.com/dashboard/v0.18.0
